@@ -1,5 +1,6 @@
 ---
-title: "Types of network plots"
+title: "Building employment network structures for Northeast States in the US"
+subtitle: "Results & repro guide"
 output: html_notebook
 ---
 
@@ -13,6 +14,7 @@ library(janitor)
 library(viridis)
 library(ggraph)
 library(visNetwork)
+library(gt)
 library(networkD3)
 library(tidyverse)
 
@@ -27,7 +29,7 @@ ny_18 <- read_xlsx("NY_networked_18.xlsx") %>% clean_names() %>% select(1:9) %>%
 
 ```
 
-```{r writing out}
+```{r writing out, include=FALSE, echo = FALSE}
 # Creating 
 # Data structure that combines both for a simple network
 simple_network <- data.frame(
@@ -42,7 +44,11 @@ simple_network <- data.frame(
 
 ```
 
-### The six plots below are of the same NY network, using different network clustering algorithms,
+##### Goal of post.
+
+The goal of this post is to show how to use the data available on DataUSA, specifically employment by state data, to demonstrate different approaches to constructing network diagrams. The data structures of the following network diagrams follow EdgeNetworks most closely, but the concepts can be transferred to other network data structures. Additional resources used to build these diagrams are listed at the bottom of the post, and are great step-by-step guides for creating many types of network diagrams from scratch. 
+
+##### Sample network outputs:
 
 ```{r plotting}
 edge_network <- graph_from_data_frame(d=simple_network, directed=F) 
@@ -58,6 +64,87 @@ plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_netw
 ```
 
 
+##### Gathering and structuring your data:
+
+The data in these examples utilize {r} [Data USA] (https://datausa.io/),  a project created by {r} [Cesar Hidalgo] (www.chidalgo.com), (whose techniques will be utilized further in this post). The resulting dataframe should have the following columns before you attempt to build a network diagram:
+
+```{r}
+ny_sample <-head(ny_18, 5) %>% select(1:7)  %>% gt()
+ny_sample
+```
+
+<br>
+<br>
+
+##### Column mapping:
+
+**id:** The id number of the observation.
+
+**to:** The node number that the link is in the direction of.
+
+**from:** The node number that the link is directed from.
+
+**industry_id1:** The industry ID for the "to" node. Can be used as an attribute for labelling or coloring.
+
+**industry_id1:** The industry ID for the "from" node. Can be used as an attribute for labelling or coloring.
+
+**industry1:** The industry name for the "to" node. Can be used as an attribute for labelling or coloring.
+
+**industry2:** The industry name for the "from" node. Can be used as an attribute for labelling or coloring.
+
+**value:** A calculated field indicating the number of interactions between the two industries. Can be used for coloring, fill, size, etc. 
+
+##### Creating the Network DF
+
+If you're reading your data in from a CSV, excel etc. use the following to create a simple dataframe that contains the coluimns as needed. The below pulls columns from a file called ny_network_data. Replace "ny_network_data" for whatever your filename is. $ indicates a call to the columns within that file structure, you can edit this to meet your own column names. 
+
+R code to create dataframe:
+```{r sample_code, echo=TRUE }
+simple_network <- data.frame(
+  to=ny_network_data$from,
+  from=ny_network_data$to,
+  id = ny_network_data$id,
+  to_industry = ny_network_data$industry2,
+  from_industry = ny_network_data$industry1,
+  value = ny_network_data$value, 
+  title = as.character(ny_network_data$industry2)
+)
+```
+
+##### Formatting the dataframe into a network graph.
+
+The igraph library provides multiple functions that convert dataframes and other data structures into a format that can be read by multiple plotting functions within R. Below is an example showing how to run your df through the graph_from_data_frame function.
+
+```{r, echo= TRUE}
+edge_network <- graph_from_data_frame(d=simple_network, directed=F) 
+```
+
+##### Plotting
+
+Once your data is structured in a way that graphing functions can read it, you're ready to plot. There are multiple tools and libraries that can be used to plot networks, each of them has their benefits and limitations. 
+
+The below represents the most basic (and built-in), but powerful use of "plot."
+```{r, echo= TRUE}
+plot(edge_network)
+```
+```{r, echo= TRUE}
+plot(edge_network)
+```
 
 
 
+
+The hard work is done, the rest is just formatting and structuring of the network diagram to make it more easily readable and valuable to a viewer. Using the extra columns in your df, you can start to play with sizes of the notes, length of edges, colors, as well as labels and titles. 
+
+A full list of all the ways to format a simple network diagram is available{r} [here.] (https://www.rdocumentation.org/packages/network/versions/1.13.0/topics/plot.network.default), and much of the example below is borrow from {r} [Yan Holtz.] (https://www.r-graph-gallery.com/250-correlation-network-with-igraph.html) 
+
+```{r, echo= TRUE}
+plot(edge_network, 
+     vertex.size=simple_network$value*.5,           # Mapping the size of the nodes to value.
+     vertex.color=simple_network$from_industry,     # Mapping the color of the nodes to industries
+     vertex.label=" ",                              # Placeholder before figuring out how to hover.
+     layout=layout.random, main="Random")           # Playing with layouts (random, sphere, etc.)
+
+```
+
+##### To update with more guidance soon!
