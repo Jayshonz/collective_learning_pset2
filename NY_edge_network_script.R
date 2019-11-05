@@ -21,7 +21,6 @@ ny_18 <- read_xlsx("NY_networked_18.xlsx") %>% clean_names() %>% select(1:9) %>%
 
 # Edge = link
 # Node = node, vertex
-
 # Create a data frame that will be used to set up the initial network links. 
 links <- data.frame(
   to=ny_network_data$from,
@@ -64,11 +63,11 @@ simple_network2 <- data.frame(
 edge_network <- graph_from_data_frame(d=simple_network, directed=F) 
 name_list <-simple_network %>% group_by(from_industry) %>% count(from_industry) %>% select(from_industry)
 # Plot the data
+par(mfrow=c(2,3))
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout=layout.random, main="Random")
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout=layout.fruchterman.reingold, main="fruchterman.reingold")
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout = layout_with_mds, main = "MDS")
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout = layout_with_graphopt, main = "Graph OPT")
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout = layout.sphere, main="Sphere")
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout=layout.circle, main="Circle") 
-legend(x=-1.5, y=-1.1, name_list$from_industry, col =  name_list$from_industry)
 
