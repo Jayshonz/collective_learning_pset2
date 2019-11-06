@@ -5,6 +5,9 @@ library(readr)
 library(janitor)
 library(viridis)
 library(ggraph)
+library(GGally)
+library(scales)
+library(network)
 library(visNetwork)
 library(networkD3)
 library(tidyverse)
@@ -70,4 +73,9 @@ plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_netw
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout = layout_with_graphopt, main = "Graph OPT")
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout = layout.sphere, main="Sphere")
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout=layout.circle, main="Circle") 
+
+
+
+
+
 
