@@ -20,7 +20,7 @@ library(tidyverse)
 # Read in the network data
 ny_network_data <- read_xlsx("NY_networked.xlsx") %>% clean_names() %>% select(1:9) %>% na.omit()  %>% filter(value > 19) 
 ny_18 <- read_xlsx("NY_networked_18.xlsx") %>% clean_names() %>% select(1:9) %>% na.omit() 
-
+agg_data <- read_xlsx("aggregated_net_data.xlsx")
 
 # Edge = link
 # Node = node, vertex
@@ -74,8 +74,4 @@ plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_netw
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout = layout.sphere, main="Sphere")
 plot(edge_network, vertex.size=simple_network$value*.5, vertex.color=simple_network$from_industry, vertex.label=" ", layout=layout.circle, main="Circle") 
 
-
-
-
-
-
+plot(edge_network)

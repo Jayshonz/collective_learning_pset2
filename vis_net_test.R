@@ -11,6 +11,7 @@ library(tidyverse)
 
 # Read in the network data
 ny_18 <- read_xlsx("NY_networked_18.xlsx") %>% clean_names() %>% select(1:9) %>% na.omit() 
+agg_data <- read_xlsx("aggregated_net_data.xlsx") %>% clean_names()
 
 
 # Create a data frame that will be used to set up the initial network links. 
